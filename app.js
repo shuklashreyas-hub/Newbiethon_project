@@ -3,8 +3,6 @@ schedule:[],
 logs:{}
 };
 
-/* LOGIN */
-
 function login(){
 
 let user=username.value;
@@ -27,7 +25,6 @@ alert("Incorrect username or password");
 
 }
 
-/* PAGE NAVIGATION */
 
 function showPage(id){
 
@@ -37,7 +34,7 @@ document.getElementById(id).classList.add("active");
 
 }
 
-/* ADD MEDICINE */
+
 
 function addMedicine(){
 
@@ -56,7 +53,7 @@ medicineList.appendChild(div);
 
 }
 
-/* CREATE SCHEDULE */
+
 
 function createSchedule(){
 
@@ -100,7 +97,6 @@ showPage("calendarPage");
 
 }
 
-/* CALENDAR */
 
 function renderCalendar(){
 
@@ -109,7 +105,7 @@ const hover=document.getElementById("hoverDetails");
 
 cal.innerHTML="";
 
-/* group doses by date */
+
 
 let days={};
 
@@ -124,8 +120,6 @@ days[date].push(d);
 });
 
 
-/* create calendar blocks */
-
 Object.keys(days).forEach(day=>{
 
 let div=document.createElement("div");
@@ -135,7 +129,7 @@ div.className="day";
 div.innerText=new Date(day).getDate();
 
 
-/* SHOW DOSAGE ON HOVER */
+
 
 div.onmouseover=()=>{
 
@@ -156,7 +150,6 @@ hover.innerHTML=html;
 };
 
 
-/* clear hover */
 
 div.onmouseout=()=>{
 
@@ -165,7 +158,6 @@ hover.innerHTML="";
 };
 
 
-/* CLICK → log taken or skipped */
 
 div.onclick=()=>{
 
@@ -201,7 +193,7 @@ cal.appendChild(div);
 });
 
 }
-/* TIMELINE */
+
 
 function renderTimeline(){
 
@@ -230,7 +222,7 @@ timeline.appendChild(div);
 
 }
 
-/* LOG DOSE */
+
 
 function logDose(id,status){
 
@@ -240,7 +232,7 @@ updateDashboard();
 
 }
 
-/* DASHBOARD */
+
 
 let chart;
 
@@ -274,7 +266,7 @@ datasets:[{data:[taken,missed]}]
 
 }
 
-/* COUNTDOWN */
+
 
 function updateCountdown(){
 
@@ -297,7 +289,7 @@ countdown.innerText=m+":"+String(s).padStart(2,"0");
 
 setInterval(updateCountdown,1000);
 
-/* REMINDER */
+
 
 function reminder(){
 
@@ -319,7 +311,6 @@ alert("Reminder: "+d.medicine+" dose in 15 minutes");
 
 setInterval(reminder,60000);
 
-/* REPORT */
 
 function generateReport(){
 
@@ -352,5 +343,6 @@ a.href=URL.createObjectURL(blob);
 a.download="Medication_Report.txt";
 
 a.click();
+
 
 }
