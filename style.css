@@ -2,7 +2,7 @@ body{
 margin:0;
 font-family:Segoe UI;
 background:linear-gradient(135deg,#0f5132,#198754,#2ecc71);
-color:white;
+color:rgb(15, 1, 1);
 }
 
 nav{
@@ -31,6 +31,7 @@ padding:30px;
 display:block;
 }
 
+/* LOGIN */
 
 #loginPage{
 display:flex;
@@ -64,7 +65,7 @@ color:white;
 cursor:pointer;
 }
 
-
+/* FORM */
 
 .form-box{
 max-width:500px;
@@ -74,6 +75,7 @@ padding:20px;
 border-radius:10px;
 }
 
+/* DASHBOARD */
 
 .stats{
 display:flex;
@@ -90,6 +92,7 @@ border-radius:10px;
 text-align:center;
 }
 
+/* COUNTDOWN */
 
 .countdown h3{
 animation:pulse 1s infinite;
@@ -101,6 +104,7 @@ animation:pulse 1s infinite;
 100%{transform:scale(1)}
 }
 
+/* CALENDAR */
 
 #calendar{
 display:grid;
@@ -132,6 +136,7 @@ border-radius:6px;
 background:#e74c3c;
 }
 
+/* TIMELINE */
 
 #timeline div{
 background:rgba(0,0,0,0.3);
@@ -140,6 +145,7 @@ margin:8px 0;
 border-radius:6px;
 }
 
+/* REPORT */
 
 #reportContent{
 background:rgba(255,255,255,0.1);
@@ -147,5 +153,54 @@ padding:20px;
 border-radius:10px;
 margin-top:10px;
 white-space:pre-line;
+}
 
+
+.login-bg{
+    background-image: url("images/medical-bg.jpg");
+    background-size: cover;
+    background-position: center;
+    height:100vh;
+    display:flex;
+    justify-content:center;
+    align-items:center;
+}
+
+
+
+.login-box{
+    background: rgba(255,255,255,0.9);
+    padding:40px;
+    border-radius:12px;
+    box-shadow:0 10px 30px rgba(0,0,0,0.2);
+    text-align:center;
+}
+
+.login-box input{
+    display:block;
+    margin:10px auto;
+    padding:10px;
+    width:200px;
+}
+
+.login-box button{
+    padding:10px 20px;
+    background:#2ecc71;
+    border:none;
+    color:white;
+    border-radius:6px;
+    cursor:pointer;
+}
+
+
+.login-bg{
+    background: 
+    linear-gradient(rgba(0,0,0,0.4), rgba(0,0,0,0.4)),
+    url("images/medical-bg.jpg");
+    background-size: cover;
+    background-position: center;
+    height:100vh;
+    display:flex;
+    justify-content:center;
+    align-items:center;
 }
