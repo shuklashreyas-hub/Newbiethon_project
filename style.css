@@ -196,7 +196,7 @@ white-space:pre-line;
 .login-bg{
     background: 
     linear-gradient(rgba(0,0,0,0.4), rgba(0,0,0,0.4)),
-    url("images/medical-bg.jpg");
+    url("medical-bg.jpg");
     background-size: cover;
     background-position: center;
     height:100vh;
