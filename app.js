@@ -1,30 +1,33 @@
 const state={
 schedule:[],
-logs:{},
-alerts:[]
+logs:{}
 };
 
 /* LOGIN */
 
 function login(){
 
-if(username.value && password.value){
+let user=username.value;
+let pass=password.value;
+
+if(user==="shivam" && pass==="#shukla123@123"){
 
 loginPage.style.display="none";
 navbar.style.display="flex";
 
 showPage("prescription");
 
-}else{
+}
 
-alert("Enter login details");
+else{
+
+alert("Incorrect username or password");
 
 }
 
 }
 
-
-/* NAVIGATION */
+/* PAGE NAVIGATION */
 
 function showPage(id){
 
@@ -33,8 +36,6 @@ document.querySelectorAll("section").forEach(s=>s.classList.remove("active"));
 document.getElementById(id).classList.add("active");
 
 }
-
-
 
 /* ADD MEDICINE */
 
@@ -54,8 +55,6 @@ div.innerHTML=`
 medicineList.appendChild(div);
 
 }
-
-
 
 /* CREATE SCHEDULE */
 
@@ -83,11 +82,10 @@ for(let i=0;i<total;i++){
 let t=new Date(start.getTime()+i*m.freq*3600000);
 
 state.schedule.push({
-
+id:m.name+"_"+i,
 medicine:m.name,
 dose:m.dose,
 time:t
-
 });
 
 }
@@ -95,18 +93,23 @@ time:t
 });
 
 renderCalendar();
+renderTimeline();
+updateDashboard();
 
 showPage("calendarPage");
 
 }
 
-
-
 /* CALENDAR */
 
 function renderCalendar(){
 
-calendar.innerHTML="";
+const cal=document.getElementById("calendar");
+const hover=document.getElementById("hoverDetails");
+
+cal.innerHTML="";
+
+/* group doses by date */
 
 let days={};
 
@@ -121,113 +124,127 @@ days[date].push(d);
 });
 
 
+/* create calendar blocks */
+
 Object.keys(days).forEach(day=>{
 
 let div=document.createElement("div");
 
-div.className="day upcoming";
+div.className="day";
 
 div.innerText=new Date(day).getDate();
+
+
+/* SHOW DOSAGE ON HOVER */
 
 div.onmouseover=()=>{
 
 let html="<b>"+day+"</b><br><br>";
 
-let meds={};
+days[day].forEach(d=>{
 
-days[day].forEach(m=>meds[m.medicine]=m.dose);
-
-Object.keys(meds).forEach(m=>{
-
-html+=m+" — "+meds[m]+" mg<br>";
+html+=`
+${d.medicine} — ${d.dose} mg
+(${new Date(d.time).toLocaleTimeString()})
+<br>
+`;
 
 });
 
-hoverDetails.innerHTML=html;
+hover.innerHTML=html;
 
 };
 
-div.onmouseout=()=>hoverDetails.innerHTML="";
 
-calendar.appendChild(div);
+/* clear hover */
+
+div.onmouseout=()=>{
+
+hover.innerHTML="";
+
+};
+
+
+/* CLICK → log taken or skipped */
+
+div.onclick=()=>{
+
+let html="<b>"+day+"</b><br><br>";
+
+days[day].forEach(d=>{
+
+html+=`
+
+<div class="doseBox">
+
+<b>${d.medicine}</b> ${d.dose} mg
+<br>
+${new Date(d.time).toLocaleTimeString()}
+
+<br>
+
+<button onclick="logDose('${d.id}','taken')">Taken</button>
+<button onclick="logDose('${d.id}','missed')">Skip</button>
+
+</div>
+
+`;
+
+});
+
+hover.innerHTML=html;
+
+};
+
+cal.appendChild(div);
+
+});
+
+}
+/* TIMELINE */
+
+function renderTimeline(){
+
+timeline.innerHTML="";
+
+state.schedule.forEach(d=>{
+
+let div=document.createElement("div");
+
+div.innerHTML=`
+
+<b>${d.medicine}</b> ${d.dose} mg
+<br>
+${new Date(d.time).toLocaleString()}
+
+<br>
+
+<button onclick="logDose('${d.id}','taken')">Taken</button>
+<button onclick="logDose('${d.id}','missed')">Skip</button>
+
+`;
+
+timeline.appendChild(div);
 
 });
 
 }
 
+/* LOG DOSE */
 
+function logDose(id,status){
 
-/* DASHBOARD CHART */
+state.logs[id]=status;
+
+updateDashboard();
+
+}
+
+/* DASHBOARD */
 
 let chart;
 
 function updateDashboard(){
-
-let taken=Object.values(state.logs).filter(x=>x==="taken").length;
-
-let missed=Object.values(state.logs).filter(x=>x==="missed").length;
-
-taken.innerText=taken;
-
-missed.innerText=missed;
-
-if(chart) chart.destroy();
-
-chart=new Chart(chart,{
-type:"doughnut",
-data:{
-labels:["Taken","Missed"],
-datasets:[{data:[taken,missed]}]
-}
-});
-
-}
-
-
-
-/* RISK DETECTION */
-
-function detectRisk(){
-
-let missed=Object.values(state.logs).filter(x=>x==="missed").length;
-
-state.alerts=[];
-
-if(missed>=3){
-
-state.alerts.push("High risk: multiple doses missed");
-
-}
-
-renderAlerts();
-
-}
-
-
-
-/* ALERTS */
-
-function renderAlerts(){
-
-alerts.innerHTML="";
-
-state.alerts.forEach(a=>{
-
-let li=document.createElement("li");
-
-li.innerText=a;
-
-alerts.appendChild(li);
-
-});
-
-}
-
-
-
-/* REPORT */
-
-function renderReport(){
 
 let total=state.schedule.length;
 
@@ -237,25 +254,27 @@ let missed=Object.values(state.logs).filter(x=>x==="missed").length;
 
 let adherence=((taken/total)*100||0).toFixed(1);
 
-report.innerHTML=`
+adherence.innerText=adherence+"%";
 
-Patient: ${patientName.value}
+takenCount.innerText=taken;
+missedCount.innerText=missed;
 
-Total Doses: ${total}
+if(chart) chart.destroy();
 
-Taken: ${taken}
+chart=new Chart(document.getElementById("chart"),{
 
-Missed: ${missed}
+type:"doughnut",
 
-Adherence: ${adherence}%
+data:{
+labels:["Taken","Missed"],
+datasets:[{data:[taken,missed]}]
+}
 
-`;
+});
 
 }
 
-
-
-/* COUNTDOWN TIMER */
+/* COUNTDOWN */
 
 function updateCountdown(){
 
@@ -267,15 +286,16 @@ if(next){
 
 let diff=(new Date(next.time)-now)/1000;
 
-nextDose.innerText=Math.floor(diff/60)+"m";
+let m=Math.floor(diff/60);
+let s=Math.floor(diff%60);
+
+countdown.innerText=m+":"+String(s).padStart(2,"0");
 
 }
 
 }
 
 setInterval(updateCountdown,1000);
-
-
 
 /* REMINDER */
 
@@ -289,7 +309,7 @@ let diff=(new Date(d.time)-now)/60000;
 
 if(diff>14 && diff<16){
 
-alert("Reminder: "+d.medicine+" in 15 minutes");
+alert("Reminder: "+d.medicine+" dose in 15 minutes");
 
 }
 
@@ -298,3 +318,39 @@ alert("Reminder: "+d.medicine+" in 15 minutes");
 }
 
 setInterval(reminder,60000);
+
+/* REPORT */
+
+function generateReport(){
+
+let total=state.schedule.length;
+
+let taken=Object.values(state.logs).filter(x=>"taken").length;
+
+let missed=Object.values(state.logs).filter(x=>"missed").length;
+
+let adherence=((taken/total)*100||0).toFixed(1);
+
+reportContent.innerText=
+
+"Patient: "+patientName.value+
+"\nTotal Doses: "+total+
+"\nTaken: "+taken+
+"\nMissed: "+missed+
+"\nAdherence: "+adherence+"%";
+
+}
+
+function downloadReport(){
+
+let blob=new Blob([reportContent.innerText]);
+
+let a=document.createElement("a");
+
+a.href=URL.createObjectURL(blob);
+
+a.download="Medication_Report.txt";
+
+a.click();
+
+}

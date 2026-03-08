@@ -1,215 +1,18 @@
 <!DOCTYPE html>
 <html>
 <head>
-
 <meta charset="UTF-8">
 <title>MedTrack Pro</title>
 
+<link rel="stylesheet" href="style.css">
+
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-
-<style>
-
-/* GLOBAL */
-
-*{
-margin:0;
-padding:0;
-box-sizing:border-box;
-font-family:"Segoe UI",sans-serif;
-}
-
-body{
-background:linear-gradient(135deg,#0a3d2b,#0f5132,#1b7a54);
-color:white;
-min-height:100vh;
-}
-
-/* NAVBAR */
-
-nav{
-display:flex;
-gap:10px;
-padding:15px;
-background:rgba(0,0,0,0.35);
-backdrop-filter:blur(10px);
-}
-
-nav button{
-padding:10px 16px;
-border:none;
-border-radius:8px;
-background:#2ecc71;
-color:white;
-font-weight:600;
-cursor:pointer;
-transition:0.2s;
-}
-
-nav button:hover{
-background:#27ae60;
-transform:translateY(-2px);
-}
-
-/* SECTIONS */
-
-section{
-display:none;
-padding:25px;
-}
-
-.active{
-display:block;
-}
-
-/* LOGIN */
-
-#loginPage{
-display:flex;
-justify-content:center;
-align-items:center;
-height:100vh;
-}
-
-.login-box{
-background:rgba(255,255,255,0.1);
-padding:40px;
-border-radius:15px;
-width:320px;
-text-align:center;
-box-shadow:0 20px 40px rgba(0,0,0,0.3);
-}
-
-.login-box h2{
-margin-bottom:20px;
-}
-
-.login-box input{
-width:100%;
-}
-
-/* INPUTS */
-
-input{
-padding:12px 14px;
-border:none;
-border-radius:8px;
-background:#f1f1f1;
-margin:8px 0;
-font-size:14px;
-outline:none;
-}
-
-input:focus{
-box-shadow:0 0 0 2px #2ecc71;
-}
-
-/* BUTTONS */
-
-button{
-padding:10px 18px;
-border:none;
-border-radius:8px;
-background:#2ecc71;
-color:white;
-font-weight:600;
-cursor:pointer;
-margin:8px 4px;
-transition:0.2s;
-}
-
-button:hover{
-background:#27ae60;
-transform:translateY(-2px);
-}
-
-/* DASHBOARD */
-
-.stats{
-display:flex;
-gap:20px;
-flex-wrap:wrap;
-}
-
-.stat{
-flex:1;
-min-width:150px;
-background:rgba(255,255,255,0.1);
-padding:20px;
-border-radius:10px;
-text-align:center;
-}
-
-/* CALENDAR */
-
-#calendar{
-display:grid;
-grid-template-columns:repeat(7,1fr);
-gap:10px;
-margin-top:20px;
-}
-
-.day{
-padding:20px;
-border-radius:10px;
-text-align:center;
-font-weight:600;
-cursor:pointer;
-transition:0.2s;
-}
-
-.day.upcoming{background:#3498db;}
-.day.taken{background:#2ecc71;}
-.day.missed{background:#e74c3c;}
-
-.day:hover{
-transform:scale(1.1);
-}
-
-#hoverDetails{
-margin-top:20px;
-padding:15px;
-background:rgba(255,255,255,0.1);
-border-radius:10px;
-min-height:60px;
-}
-
-/* TIMELINE */
-
-#timeline div{
-background:rgba(0,0,0,0.35);
-padding:12px;
-margin:10px 0;
-border-radius:8px;
-border-left:4px solid #2ecc71;
-}
-
-/* ALERTS */
-
-#alerts li{
-background:#c0392b;
-padding:10px;
-margin:10px 0;
-border-radius:6px;
-}
-
-/* REPORT */
-
-#report{
-background:rgba(255,255,255,0.1);
-padding:20px;
-border-radius:10px;
-margin-top:10px;
-white-space:pre-line;
-}
-
-</style>
 
 </head>
 
 <body>
 
-
-<!-- LOGIN -->
+<!-- LOGIN PAGE -->
 
 <section id="loginPage" class="active">
 
@@ -236,7 +39,6 @@ white-space:pre-line;
 <button onclick="showPage('prescription')">Prescription</button>
 <button onclick="showPage('calendarPage')">Calendar</button>
 <button onclick="showPage('timelinePage')">Timeline</button>
-<button onclick="showPage('alertsPage')">Alerts</button>
 <button onclick="showPage('reportPage')">Report</button>
 
 </nav>
@@ -266,9 +68,9 @@ white-space:pre-line;
 <p>Missed</p>
 </div>
 
-<div class="stat">
-<h3 id="nextDose">--</h3>
-<p>Next Dose</p>
+<div class="stat countdown">
+<h3 id="countdown">--:--</h3>
+<p>Next Dose In</p>
 </div>
 
 </div>
@@ -285,6 +87,8 @@ white-space:pre-line;
 
 <h2>Create Prescription</h2>
 
+<div class="form-box">
+
 <input id="patientName" placeholder="Patient Name">
 
 <div id="medicineList"></div>
@@ -294,6 +98,8 @@ white-space:pre-line;
 <input type="datetime-local" id="startTime">
 
 <button onclick="createSchedule()">Create Schedule</button>
+
+</div>
 
 </section>
 
@@ -325,288 +131,21 @@ white-space:pre-line;
 
 
 
-<!-- ALERTS -->
-
-<section id="alertsPage">
-
-<h2>Risk Alerts</h2>
-
-<ul id="alerts"></ul>
-
-</section>
-
-
-
 <!-- REPORT -->
 
 <section id="reportPage">
 
 <h2>Medication Summary Report</h2>
 
-<div id="report"></div>
+<div id="reportContent"></div>
 
+<button onclick="generateReport()">Generate Report</button>
 <button onclick="downloadReport()">Download Report</button>
 
 </section>
 
 
-
-<script>
-
-/* GLOBAL STATE */
-
-const state={
-schedule:[],
-logs:{},
-alerts:[]
-};
-
-/* LOGIN */
-
-function login(){
-
-if(username.value && password.value){
-
-loginPage.style.display="none";
-navbar.style.display="flex";
-
-showPage("prescription");
-
-}
-
-}
-
-/* PAGE SWITCH */
-
-function showPage(id){
-
-document.querySelectorAll("section").forEach(s=>s.classList.remove("active"));
-
-document.getElementById(id).classList.add("active");
-
-}
-
-/* ADD MEDICINE */
-
-function addMedicine(){
-
-let div=document.createElement("div");
-
-div.innerHTML=`
-
-<input class="medName" placeholder="Medicine">
-<input class="medDose" placeholder="Dose mg">
-<input class="medFreq" placeholder="Frequency hours">
-<input class="medDur" placeholder="Duration days">
-
-`;
-
-medicineList.appendChild(div);
-
-}
-
-/* CREATE SCHEDULE */
-
-function createSchedule(){
-
-let meds=[...document.querySelectorAll(".medName")].map((m,i)=>({
-
-name:m.value,
-dose:document.querySelectorAll(".medDose")[i].value,
-freq:parseInt(document.querySelectorAll(".medFreq")[i].value),
-dur:parseInt(document.querySelectorAll(".medDur")[i].value)
-
-}));
-
-let start=new Date(startTime.value);
-
-state.schedule=[];
-
-meds.forEach(m=>{
-
-let total=(24/m.freq)*m.dur;
-
-for(let i=0;i<total;i++){
-
-let t=new Date(start.getTime()+i*m.freq*3600000);
-
-state.schedule.push({
-medicine:m.name,
-dose:m.dose,
-time:t
-});
-
-}
-
-});
-
-renderCalendar();
-renderTimeline();
-updateDashboard();
-renderReport();
-
-showPage("calendarPage");
-
-}
-
-/* CALENDAR */
-
-function renderCalendar(){
-
-calendar.innerHTML="";
-
-let days={};
-
-state.schedule.forEach(d=>{
-
-let date=new Date(d.time).toDateString();
-
-if(!days[date]) days[date]=[];
-
-days[date].push(d);
-
-});
-
-Object.keys(days).forEach(day=>{
-
-let div=document.createElement("div");
-
-div.className="day upcoming";
-
-div.innerText=new Date(day).getDate();
-
-div.onmouseover=()=>{
-
-let html="<b>"+day+"</b><br><br>";
-
-let meds={};
-
-days[day].forEach(m=>meds[m.medicine]=m.dose);
-
-Object.keys(meds).forEach(m=>{
-
-html+=m+" — "+meds[m]+" mg<br>";
-
-});
-
-hoverDetails.innerHTML=html;
-
-};
-
-div.onmouseout=()=>hoverDetails.innerHTML="";
-
-calendar.appendChild(div);
-
-});
-
-}
-
-/* TIMELINE */
-
-function renderTimeline(){
-
-timeline.innerHTML="";
-
-state.schedule.forEach(d=>{
-
-let div=document.createElement("div");
-
-div.innerHTML="<b>"+d.medicine+"</b> "+d.dose+" mg<br>"+new Date(d.time).toLocaleString();
-
-timeline.appendChild(div);
-
-});
-
-}
-
-/* DASHBOARD */
-
-let chart;
-
-function updateDashboard(){
-
-let total=state.schedule.length;
-
-let taken=Object.values(state.logs).filter(x=>x==="taken").length;
-
-let missed=Object.values(state.logs).filter(x=>x==="missed").length;
-
-document.getElementById("takenCount").innerText=taken;
-document.getElementById("missedCount").innerText=missed;
-
-let adherence=((taken/total)*100||0).toFixed(1);
-
-document.getElementById("adherence").innerText=adherence+"%";
-
-if(chart) chart.destroy();
-
-chart=new Chart(document.getElementById("chart"),{
-
-type:"doughnut",
-
-data:{
-labels:["Taken","Missed"],
-datasets:[{
-data:[taken,missed]
-}]
-}
-
-});
-
-}
-
-/* REPORT */
-
-function renderReport(){
-
-let total=state.schedule.length;
-
-report.innerText=
-
-"Patient: "+patientName.value+
-"\nTotal Scheduled Doses: "+total;
-
-}
-
-/* DOWNLOAD REPORT */
-
-function downloadReport(){
-
-let blob=new Blob([report.innerText]);
-
-let a=document.createElement("a");
-
-a.href=URL.createObjectURL(blob);
-
-a.download="Medication_Report.txt";
-
-a.click();
-
-}
-
-/* REMINDER */
-
-function reminder(){
-
-let now=new Date();
-
-state.schedule.forEach(d=>{
-
-let diff=(new Date(d.time)-now)/60000;
-
-if(diff>14 && diff<16){
-
-alert("Reminder: "+d.medicine+" in 15 minutes");
-
-}
-
-});
-
-}
-
-setInterval(reminder,60000);
-
-</script>
+<script src="app.js"></script>
 
 </body>
 </html>
