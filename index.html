@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+
+<title>MedTracker - Medication Adherence</title>
+
+<meta name="viewport" content="width=device-width, initial-scale=1">
+
+<link rel="stylesheet" href="style.css">
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+</head>
+
+<body>
+
+<nav>
+
+<h2 class="logo">MedTracker</h2>
+
+<div class="menu">
+
+<button onclick="showPage('home')">Home</button>
+<button onclick="showPage('profile')">Profile</button>
+<button onclick="showPage('prescription')">Prescription</button>
+<button onclick="showPage('calendarPage')">Calendar</button>
+<button onclick="showPage('analytics')">Analytics</button>
+<button onclick="showPage('history')">History</button>
+
+</div>
+
+</nav>
+
+
+<!-- HOME -->
+
+<section id="home" class="page active">
+
+<div class="hero">
+
+<h1>Smart Medication Adherence System</h1>
+
+<p>
+Track medication schedules, receive reminders,
+and monitor adherence analytics.
+</p>
+
+<button class="primary" onclick="showPage('profile')">
+Start Tracking
+</button>
+
+</div>
+
+</section>
+
+
+<!-- PROFILE -->
+
+<section id="profile" class="page">
+
+<div class="card">
+
+<h2>User Profile</h2>
+
+<input id="username" placeholder="Name">
+
+<input id="age" placeholder="Age">
+
+<input id="condition" placeholder="Medical Condition">
+
+<button class="primary" onclick="saveUser()">
+Save Profile
+</button>
+
+</div>
+
+</section>
+
+
+<!-- PRESCRIPTION -->
+
+<section id="prescription" class="page">
+
+<div class="card">
+
+<h3 id="welcomeUser"></h3>
+
+<h2>Add Prescription</h2>
+
+<input id="drug" placeholder="Drug Name">
+
+<input id="dosage" placeholder="Dosage">
+
+<input id="frequency" type="number" placeholder="Frequency (hours)">
+
+<input id="duration" type="number" placeholder="Duration (days)">
+
+<input id="start" type="datetime-local">
+
+<button class="primary" onclick="addPrescription()">
+Save Prescription
+</button>
+
+</div>
+
+<div class="card">
+
+<h3>Next Dose</h3>
+
+<p id="nextDose">Not scheduled</p>
+
+<button onclick="logDose()" class="primary">
+💊 I Took Medicine
+</button>
+
+</div>
+
+</section>
+
+
+<!-- CALENDAR -->
+
+<section id="calendarPage" class="page">
+
+<h2 class="title">Medication Calendar</h2>
+
+<div id="calendar"></div>
+
+</section>
+
+
+<!-- ANALYTICS -->
+
+<section id="analytics" class="page">
+
+<h2 class="title">Adherence Analytics</h2>
+
+<canvas id="chart"></canvas>
+
+</section>
+
+
+<!-- HISTORY -->
+
+<section id="history" class="page">
+
+<h2 class="title">Dose History</h2>
+
+<div id="timeline"></div>
+
+</section>
+
+
+<audio id="alarm">
+<source src="https://actions.google.com/sounds/v1/alarms/alarm_clock.ogg">
+</audio>
+
+
+<div class="darkToggle" onclick="toggleDark()">🌙</div>
+
+<script src="script.js"></script>
+
+</body>
+</html>
