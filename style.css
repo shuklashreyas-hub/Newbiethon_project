@@ -31,7 +31,6 @@ padding:30px;
 display:block;
 }
 
-/* LOGIN */
 
 #loginPage{
 display:flex;
@@ -65,7 +64,7 @@ color:white;
 cursor:pointer;
 }
 
-/* FORM */
+
 
 .form-box{
 max-width:500px;
@@ -75,7 +74,6 @@ padding:20px;
 border-radius:10px;
 }
 
-/* DASHBOARD */
 
 .stats{
 display:flex;
@@ -92,7 +90,6 @@ border-radius:10px;
 text-align:center;
 }
 
-/* COUNTDOWN */
 
 .countdown h3{
 animation:pulse 1s infinite;
@@ -104,7 +101,6 @@ animation:pulse 1s infinite;
 100%{transform:scale(1)}
 }
 
-/* CALENDAR */
 
 #calendar{
 display:grid;
@@ -136,7 +132,6 @@ border-radius:6px;
 background:#e74c3c;
 }
 
-/* TIMELINE */
 
 #timeline div{
 background:rgba(0,0,0,0.3);
@@ -145,7 +140,6 @@ margin:8px 0;
 border-radius:6px;
 }
 
-/* REPORT */
 
 #reportContent{
 background:rgba(255,255,255,0.1);
@@ -153,4 +147,5 @@ padding:20px;
 border-radius:10px;
 margin-top:10px;
 white-space:pre-line;
+
 }
